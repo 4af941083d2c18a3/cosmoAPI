@@ -1,0 +1,38 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    </head>
+    <body>
+        <a target="_blank" rel="noopener noreferrer">api.cosmo.fans/objeckt/v1/owned-by/</a><input onchange="jsonCall('api.cosmo.fans/objekt/v1/owned-by/',input('address'))" id="address"><span>?start_after=</span><input onchange="jsonCall('api.cosmo.fans/objekt/v1/owned-by/',input('address')+'?start_after='+input('addressSA'))" id="addressSA">
+        <br><a target="_blank" rel="noopener noreferrer">api.cosmo.fans/user/v1/by-nickname/</a><input onchange="jsonCall('api.cosmo.fans/user/v1/by-nickname/',input('nickname'))" id="nickname">
+        <br><a target="_blank" rel="noopener noreferrer">api.cosmo.fans/user/v1/search?query=</a><input onchange="jsonCall('cache.nova.gd/user/v1/search?query=',input('query'))" id="query"><span>&start_after=</span><input onchange="jsonCall('cache.nova.gd/user/v1/search?query=',input('query')+'&start_after='+input('nicknameSA'))" id="nicknameSA">
+        <br><a target="_blank" rel="noopener noreferrer">api.cosmo.fans/objekt/v1/token/</a><input onchange="jsonCall('api.cosmo.fans/objekt/v1/token/',input('token'))" id="token">
+        <br><a target="_blank" rel="noopener noreferrer">api.cosmo.fans/artist/v1</a><input onchange="jsonCall('api.cosmo.fans/artist/v1/',input('artist').split('/')[input('artist').split('/').length-1])" id="artist">
+        <br><a target="_blank" rel="noopener noreferrer">api.cosmo.fans/news/v1/feed</a><input onchange="jsonCall('api.cosmo.fans/news/v1/feed/',input('feedNum').split('/')[input('feedNum').split('/').length-1])" id="feedNum"><span>?artist=</span><input onchange="jsonCall('api.cosmo.fans/news/v1/feed',(input('feedArtist') && '?artist='+input('feedArtist')))" id="feedArtist">
+        <pre id="json"></pre>
+    </body>
+    <script>
+        async function jsonCall(endpoint,query) {
+            var data = await fetch('https://'+endpoint+query)
+            var json = await data.text()
+            document.querySelector('#json').innerText = json
+        }
+        function input(id) {
+            return document.querySelector('#'+id).value
+        }
+        function address() {
+            var a = document.querySelector('#address').value
+            // document.querySelector('#owned-by').href = 'https://api.cosmo.fans/objekt/v1/owned-by/'+a
+            jsonCall('https://api.cosmo.fans/objekt/v1/owned-by/'+a)
+        }
+        function userNickname() {
+            var a = document.querySelector('#nickname').value
+            // document.querySelector('#by-nickname').href = 'https://api.cosmo.fans/user/v1/by-nickname/'+a
+            jsonCall('https://api.cosmo.fans/user/v1/by-nickname/'+a)
+        }
+        function searchNickname() {
+            var a = document.querySelector('#query').value
+            jsonCall('https://cache.nova.gd/user/v1/search?query='+a)
+        }
+    </script>
+</html>
