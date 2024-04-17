@@ -3,36 +3,140 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     </head>
     <body>
-        <a target="_blank" rel="noopener noreferrer">api.cosmo.fans/objeckt/v1/owned-by/</a><input onchange="jsonCall('api.cosmo.fans/objekt/v1/owned-by/',input('address'))" id="address"><span>?start_after=</span><input onchange="jsonCall('api.cosmo.fans/objekt/v1/owned-by/',input('address')+'?start_after='+input('addressSA'))" id="addressSA">
-        <br><a target="_blank" rel="noopener noreferrer">api.cosmo.fans/user/v1/by-nickname/</a><input onchange="jsonCall('api.cosmo.fans/user/v1/by-nickname/',input('nickname'))" id="nickname">
-        <br><a target="_blank" rel="noopener noreferrer">api.cosmo.fans/user/v1/search?query=</a><input onchange="jsonCall('cache.nova.gd/user/v1/search?query=',input('query'))" id="query"><span>&start_after=</span><input onchange="jsonCall('cache.nova.gd/user/v1/search?query=',input('query')+'&start_after='+input('nicknameSA'))" id="nicknameSA">
-        <br><a target="_blank" rel="noopener noreferrer">api.cosmo.fans/objekt/v1/token/</a><input onchange="jsonCall('api.cosmo.fans/objekt/v1/token/',input('token'))" id="token">
-        <br><a target="_blank" rel="noopener noreferrer">api.cosmo.fans/artist/v1</a><input onchange="jsonCall('api.cosmo.fans/artist/v1/',input('artist').split('/')[input('artist').split('/').length-1])" id="artist">
-        <br><a target="_blank" rel="noopener noreferrer">api.cosmo.fans/news/v1/feed</a><input onchange="jsonCall('api.cosmo.fans/news/v1/feed/',input('feedNum').split('/')[input('feedNum').split('/').length-1])" id="feedNum"><span>?artist=</span><input onchange="jsonCall('api.cosmo.fans/news/v1/feed',(input('feedArtist') && '?artist='+input('feedArtist')))" id="feedArtist">
+        <p class="need-auth">
+            <input placeholder="auth key" id="auth">
+        </p>
+        <p>
+            <span>api.cosmo.fans/objekt/v1/owned-by/</span>
+            <input placeholder="address" onchange="jsonCall('objekt/v1/owned-by/',input('address'),false)" id="address">
+            <span>?start_after=</span>
+            <input placeholder="start_after" onchange="jsonCall('objekt/v1/owned-by/',input('address')+'?start_after='+input('addressSA'),false)" id="addressSA">        
+        </p>
+        <p>
+            <span>api.cosmo.fans/objekt/v1/token/</span>
+            <input placeholder="token ID" onchange="jsonCall('objekt/v1/token/',input('token'),false)" id="token">
+        </p>
+        <p>
+            <span>api.cosmo.fans/user/v1/by-nickname/</span>
+            <input placeholder="exact name" onchange="jsonCall('user/v1/by-nickname/',input('nickname'),false)" id="nickname">
+        </p>
+        <p class="need-auth">
+            <span>api.cosmo.fans/user/v1/search?query=</span>
+            <input placeholder="string to search" onchange="jsonCall('user/v1/search?query=',input('query'),true)" id="query">
+            <span>&start_after=</span>
+            <input placeholder="start_after" onchange="jsonCall('user/v1/search?query=',input('query')+'&start_after='+input('nicknameSA'),true)" id="nicknameSA">
+        </p>
+        <p>
+            <span>api.cosmo.fans/artist/v1/</span>
+            <input placeholder="artist" onchange="jsonCall('artist/v1/',input('artist'),false)" id="artist">
+            <button onclick="jsonCall('artist/v1/','',false)">fetch with no query</button>
+        </p>
+        <p>
+            <span>api.cosmo.fans/news/v1/feed/</span>
+            <input placeholder="feed ID" onchange="jsonCall('news/v1/feed/',input('feedNum'),false)" id="feedNum">
+            <span>?artist=</span>
+            <input placeholder="artist" onchange="jsonCall('news/v1/feed',(input('feedArtist') && '?artist='+input('feedArtist')),false)" id="feedArtist">
+            <button onclick="jsonCall('news/v1/feed','',false)">fetch with no query</button>
+        </p>
+        <p>
+            <span>api.cosmo.fans/news/v1/exclusive/</span>
+            <input placeholder="exclusive ID" onchange="jsonCall('news/v1/exclusive/',input('exclusiveNum'),false)" id="exclusiveNum">
+            <span>?artist=</span>
+            <input placeholder="artist" onchange="jsonCall('news/v1/feed',(input('feedArtist') && '?artist='+input('feedArtist')),false)" id="feedArtist">
+            <button onclick="jsonCall('news/v1/exclusive','',false)">fetch with no query</button>
+        </p>
+        <p class="need-auth">
+            <span>api.cosmo.fans/rekord/v1/post?artistName=</span>
+            <input placeholder="artist" onchange="jsonCall('rekord/v1/post?includeFromPost=false&seekDirection=before_than&limit=30&sort=desc&artistName=',input('rekordArtist'),true)" id="rekordArtist">
+            <span>&fromPostId=</span>
+            <input placeholder="ID less than" onchange="jsonCall('rekord/v1/post?includeFromPost=false&seekDirection=before_than&limit=30&sort=desc&artistName=',input('rekordArtist')+'&fromPostId='+input('rekordFrom'),true)" id="rekordFrom">
+        </p>
+        <p>
+            <span>api.cosmo.fans/gravity/v3/</span>
+            <input placeholder="artist" onchange="jsonCall('gravity/v3/',input('gravityArtist'),false)" id="gravityArtist">
+            <span>/gravity/</span>
+            <input placeholder="in cosmo ID" onchange="jsonCall('gravity/v3/',input('gravityArtist')+'/gravity/'+input('gravityCosmoId'),false)" id="gravityCosmoId">
+            <span class="need-auth">/polls/
+                <input placeholder="pollDetail ID" onchange="jsonCall('gravity/v3/',input('gravityArtist')+'/gravity/'+input('gravityCosmoId')+'/polls/'+input('gravityChainId'),true)" id="gravityChainId">
+            </span>
+        </p>
+        <!-- <p>api.cosmo.fans/ValueA</span><input onchange="jsonCall('ValueA',input('ValueB'),ValueC)" id="ValueB"><span>ValueD</span><input onchange="jsonCall('gravity/v3/',input('ValueB')+'ValueD'+input('ValueE'),ValueC)" id="ValueE"> -->
         <pre id="json"></pre>
     </body>
     <script>
-        async function jsonCall(endpoint,query) {
-            var data = await fetch('https://'+endpoint+query)
+        cosmo = 'https://api.cosmo.fans/'
+        nova = 'https://cache.nova.gd/'
+        async function jsonCall(path,query,auth) {
+            // var url = auth ? nova+path+query : cosmo+path+query
+            var url = cosmo+path+query
+            var authKey
+            auth ? authKey = document.querySelector('#auth').value : undefined;
+            // var data = await fetch(url,{headers:{'Accept-Language':'ko'}})
+            // var url = domain+path+query
+            var data = auth ? await fetch(url,{headers:{'Authorization':authKey,'Accept-Language':'ko'}}) : await fetch(url,{headers:{'Accept-Language':'ko'}})
             var json = await data.text()
             document.querySelector('#json').innerText = json
         }
         function input(id) {
             return document.querySelector('#'+id).value
         }
-        function address() {
-            var a = document.querySelector('#address').value
-            // document.querySelector('#owned-by').href = 'https://api.cosmo.fans/objekt/v1/owned-by/'+a
-            jsonCall('https://api.cosmo.fans/objekt/v1/owned-by/'+a)
-        }
-        function userNickname() {
-            var a = document.querySelector('#nickname').value
-            // document.querySelector('#by-nickname').href = 'https://api.cosmo.fans/user/v1/by-nickname/'+a
-            jsonCall('https://api.cosmo.fans/user/v1/by-nickname/'+a)
-        }
-        function searchNickname() {
-            var a = document.querySelector('#query').value
-            jsonCall('https://cache.nova.gd/user/v1/search?query='+a)
-        }
+        var inputArray = document.querySelectorAll('input')
+        inputArray.forEach(i=>{
+            i.style.width = i.placeholder.length*7.703125+16 +'px'
+            i.addEventListener('input',e=>{
+                if (i.value.length) {
+                    i.style.width = i.value.length*7.703125+16 + 'px'
+                } else {
+                    i.style.width = i.placeholder.length*7.703125+16 +'px'
+                }
+                // console.log(e.data)
+            })
+        })
     </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 8px;
+            background-color: black;
+            color: #18e00d;
+        }
+        .need-auth {
+            color: #e83;
+        }
+        p {
+            margin: 2px 0px;
+        }
+        input {
+            background-color: black;
+            border: transparent;
+            border-bottom: 1px solid #18e00d;
+            caret-color: gold;
+            color: gold;
+            text-align: center;
+            /* width: 1px; */
+        }
+        input::placeholder {
+            /* color: #688; */
+            color: #7c997a
+        }
+        .need-auth input {
+            border-bottom: 1px solid #e83;
+        }
+        .need-auth input::placeholder {
+            /* color: #994; */
+            color: #a85;
+        }
+        button {
+            background-color: #333;
+            border: 1px solid #7c997a;
+            color: #18e00d;
+            border-radius: 6px;
+            font-family: Consolas;
+        }
+        input,pre,p {
+            font-family: Consolas;
+            font-size: 14px;
+            /* font-weight: bold; */
+        }
+    </style>
 </html>
