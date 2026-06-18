@@ -1,143 +1,259 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <meta charset="UTF-8">
         <title>Cosmo API</title>
+        <link rel="stylesheet" href="./index.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
     </head>
     <body>
-        <p class="need-auth">
-            <input placeholder="auth key" id="auth">
-        </p>
-        <p>
-            <span>api.cosmo.fans/objekt/v1/owned-by/</span>
-            <input placeholder="address" onchange="jsonCall('objekt/v1/owned-by/',input('address'),false)" id="address">
-            <span>?start_after=</span>
-            <input placeholder="start_after" onchange="jsonCall('objekt/v1/owned-by/',input('address')+'?start_after='+input('addressSA'),false)" id="addressSA">        
-        </p>
-        <p>
-            <span>api.cosmo.fans/objekt/v1/token/</span>
-            <input placeholder="token ID" onchange="jsonCall('objekt/v1/token/',input('token'),false)" id="token">
-        </p>
-        <p>
-            <span>api.cosmo.fans/user/v1/by-nickname/</span>
-            <input placeholder="exact name" onchange="jsonCall('user/v1/by-nickname/',input('nickname'),false)" id="nickname">
-        </p>
-        <p class="need-auth">
-            <span>api.cosmo.fans/user/v1/search?query=</span>
-            <input placeholder="string to search" onchange="jsonCall('user/v1/search?query=',input('query'),true)" id="query">
-            <span>&start_after=</span>
-            <input placeholder="start_after" onchange="jsonCall('user/v1/search?query=',input('query')+'&start_after='+input('nicknameSA'),true)" id="nicknameSA">
-        </p>
-        <p>
-            <span>api.cosmo.fans/artist/v1/</span>
-            <input placeholder="artist" onchange="jsonCall('artist/v1/',input('artist'),false)" id="artist">
-            <button onclick="jsonCall('artist/v1/','',false)">fetch with no query</button>
-        </p>
-        <p>
-            <span>api.cosmo.fans/news/v1/feed/</span>
-            <input placeholder="feed ID" onchange="jsonCall('news/v1/feed/',input('feedNum'),false)" id="feedNum">
-            <span>?artist=</span>
-            <input placeholder="artist" onchange="jsonCall('news/v1/feed',(input('feedArtist') && '?artist='+input('feedArtist')),false)" id="feedArtist">
-            <button onclick="jsonCall('news/v1/feed','',false)">fetch with no query</button>
-        </p>
-        <p>
-            <span>api.cosmo.fans/news/v1/exclusive/</span>
-            <input placeholder="exclusive ID" onchange="jsonCall('news/v1/exclusive/',input('exclusiveNum'),false)" id="exclusiveNum">
-            <span>?artist=</span>
-            <input placeholder="artist" onchange="jsonCall('news/v1/feed',(input('feedArtist') && '?artist='+input('feedArtist')),false)" id="feedArtist">
-            <button onclick="jsonCall('news/v1/exclusive','',false)">fetch with no query</button>
-        </p>
-        <p class="need-auth">
-            <span>api.cosmo.fans/rekord/v1/post?artistName=</span>
-            <input placeholder="artist" onchange="jsonCall('rekord/v1/post?includeFromPost=false&seekDirection=before_than&limit=30&sort=desc&artistName=',input('rekordArtist'),true)" id="rekordArtist">
-            <span>&fromPostId=</span>
-            <input placeholder="ID less than" onchange="jsonCall('rekord/v1/post?includeFromPost=false&seekDirection=before_than&limit=30&sort=desc&artistName=',input('rekordArtist')+'&fromPostId='+input('rekordFrom'),true)" id="rekordFrom">
-        </p>
-        <p>
-            <span>api.cosmo.fans/gravity/v3/</span>
-            <input placeholder="artist" onchange="jsonCall('gravity/v3/',input('gravityArtist'),false)" id="gravityArtist">
-            <span>/gravity/</span>
-            <input placeholder="in cosmo ID" onchange="jsonCall('gravity/v3/',input('gravityArtist')+'/gravity/'+input('gravityCosmoId'),false)" id="gravityCosmoId">
-            <span class="need-auth">/polls/
-                <input placeholder="pollDetail ID" onchange="jsonCall('gravity/v3/',input('gravityArtist')+'/gravity/'+input('gravityCosmoId')+'/polls/'+input('gravityChainId'),true)" id="gravityChainId">
-            </span>
-        </p>
-        <!-- <p>api.cosmo.fans/ValueA</span><input onchange="jsonCall('ValueA',input('ValueB'),ValueC)" id="ValueB"><span>ValueD</span><input onchange="jsonCall('gravity/v3/',input('ValueB')+'ValueD'+input('ValueE'),ValueC)" id="ValueE"> -->
+        <div>
+            <select id="artistId">
+                <option value="tripleS" selected>tripleS</option>
+                <option value="ARTMS">ARTMS</option>
+                <option value="idntt">idntt</option>
+            </select>
+            <p>
+                <b>Objekt Search</b>
+                <button onclick="bffCall('v3/objekts/nft-metadata/' + input('tokenID'))">fetch</button>
+                <input placeholder="token ID" id="tokenID">
+            </p>
+            <p>
+                <b>Owned Single Objekt</b>
+                <button onclick="bffCall('v3/owned-by/me/' + input('ownedObjektId'))">fetch</button>
+                <input placeholder="token ID" id="ownedObjektId">
+            </p>
+            <p>
+                <b>Owned Objekt List</b>
+                <button onclick="bffCall('v3/objekt-summaries?artistId=' + input('artistId') + '&order=newest&page=' + input('objektListPage') + '&size=30')">fetch</button>
+                <span>page : </span>
+                <input placeholder="page" id="objektListPage" value="1">
+                <!-- season[](개수만큼 나열), class[](개수만큼 나열), memberIds[](1~29)(개수만큼 나열), on_offline(콤마로 구분), transferable, gridable -->
+            </p>
+            <br>
+            <p>
+                <b>User Me</b>
+                <button onclick="bffCall('v3/users/me')">fetch</button>
+            </p>
+            <p>
+                <b>User Search</b>
+                <button onclick="bffCall('v3/users/search?skip=' + input('userSkip') + '&take=20&nickname=' + encodeURI(input('userName')))">fetch</button>
+                <input placeholder="query" id="userName">
+                <span>skip : </span>
+                <input placeholder="skip" id="userSkip" value="0">
+            </p>
+            <br>
+            <p>
+                <b>All Artists</b>
+                <button onclick="bffCall('v3/artists')">fetch</button>
+            </p>
+            <p>
+                <b>Artist Search</b>
+                <button onclick="bffCall('v3/artists/' + input('artistId'))">fetch</button>
+            </p>
+            <br>
+            <p>
+                <b>Single Atmosphere</b>
+                <button onclick="bffCall('v3/news/feed/' + input('feedNum'))">fetch</button>
+                <input placeholder="feed ID" id="feedNum">
+            </p>
+            <p>
+                <b>Atmosphere List</b>
+                <button onclick="bffCall('v3/news/feed?artistId=' + input('artistId'))">fetch</button>
+            </p>
+            <p>
+                <b>Exclusive List</b>
+                <button onclick="bffCall('v3/news/exclusive?artistId=' + input('artistId') + '&startAfter=' + input('exclusiveStartAfter'))">fetch</button>
+                <span>startAfter</span>
+                <input placeholder="startAfter" id="exclusiveStartAfter" value="0">
+            </p>
+            <p>
+                <b>Rekord List</b>
+                <button onclick="bffCall('v3/rekords?limit=30&seekDirection=before_than&sort=desc&sortBy=id&artistId=' + input('artistId') + '&includeFromPost=false&fromPostId=' + input('rekordFrom'))">fetch</button>
+                <span>ID less than</span>
+                <input placeholder="post ID" id="rekordFrom">
+            </p>
+            <p>
+                <b>Rekord Top</b>
+                <button onclick="bffCall('v3/rekords/top?artistId=' + input('artistId'))">fetch</button>
+            </p>
+            <br>
+            <p>
+                <b>COMO Transactions</b>
+                <button onclick="bffCall('v3/comos?take=30&skip=' + input('comoSkip') + '&category=' + input('comoCategory') + '&artistId=' + input('artistId'))">fetch</button>
+                <span>skip : </span>
+                <input placeholder="skip" id="comoSkip" value="0">
+                <span>category : </span>
+                <select id="comoCategory">
+                    <option value="ALL" selected>ALL</option>
+                    <option value="USE">USE</option>
+                    <option value="EARN">EARN</option>
+                </select>
+            </p>
+            <p>
+                <b>Gravity List</b>
+                <button onclick="bffCall('v4/gravities?artistId=' + input('artistId') + '&category=all&skip=' + input('gravityListSkip') + '&take=20&sortBy=endDate&sort=desc')">fetch</button>
+                <span>skip : </span>
+                <input placeholder="skip" id="gravityListSkip" value="0">
+            </p>
+            <p>
+                <b>Poll Detail</b>
+                <button onclick="bffCall('v3/polls/' + input('pollId'))">fetch</button>
+                <input placeholder="poll ID" id="pollId">
+            </p>
+            <br>
+            <p>
+                <b>Notice List</b>
+                <button onclick="bffCall('v3/notices?artistId=' + input('artistId') + '&take=10&skip=' + input('noticeListSkip'))">fetch</button>
+                <span>skip : </span>
+                <input placeholder="skip" id="noticeListSkip" value="0">
+            </p>
+            <p>
+                <b>Single Notice</b>
+                <button onclick="bffCall('v3/notices/' + input('noticeId'))">fetch</button>
+                <input placeholder="notice ID" id="noticeId">
+            </p>
+            <p>
+                <b>Schedule List</b>
+                <button onclick="bffCall('v3/artist-schedules?artistId=' + input('artistId') + '&take=10&filter=' + input('scheduleFilter') + '&skip=' + input('scheduleSkip'))">fetch</button>
+                <span>skip : </span>
+                <input placeholder="skip" id="scheduleSkip" value="0">
+                <span>filter : </span>
+                <select id="scheduleFilter">
+                    <option value="upcoming" selected>upcoming</option>
+                    <option value="past">past</option>
+                </select>
+            </p>
+            <p>
+                <b>Schedule Detail</b>
+                <button onclick="bffCall('v3/artist-schedules/' + input('artistScheduleId'))">fetch</button>
+                <input placeholder="schedule ID" id="artistScheduleId">
+            </p>
+            <p>
+                <b>Form List</b>
+                <button onclick="bffCall('v3/form-events?artistId=' + input('artistId'))">fetch</button>
+            </p>
+            <p>
+                <b>Form Detail</b>
+                <button onclick="bffCall('v3/form-events/' + input('formEventId'))">fetch</button>
+                <input placeholder="event ID" id="formEventId" value="11">
+            </p>
+            <p>
+                <b>Notification List</b>
+                <button onclick="bffCall('v3/notification-center?take=10&artistId=' + input('artistId') + '&skip=' + input('notificationSkip'))">fetch</button>
+                <span>skip : </span>
+                <input placeholder="skip" id="notificationSkip" value="0">
+            </p>
+            <br>
+            <p>
+                <b>Room Post</b>
+                <button onclick="bffCall('v3/room-posts?take=10&skip=' + input('roomPostSkip') + '&artistId=' + input('artistId') + '&kind=' + input('roomPostKind'))">fetch</button>
+                <span>skip : </span>
+                <input placeholder="skip" id="roomPostSkip" value="0">
+                <span>kind : </span>
+                <select id="roomPostKind">
+                    <option value="" selected>all</option>
+                    <option value="post">post</option>
+                    <option value="live-clip">live-clip</option>
+                </select>
+            </p>
+            <p>
+                <b>Room Post Comment</b>
+                <button onclick="bffCall('v3/room-posts/' + input('roomPostCommentId') + '/comments?take=10&order=desc&skip=' + input('roomPostCommentSkip') + '&filter=' + input('roomPostCommentFilter') + (input('roomPostCommentFilter') ? '_comment_only' : ''))">fetch</button>
+                <input placeholder="room post ID" id="roomPostCommentId">
+                <span>skip : </span>
+                <input placeholder="skip" id="roomPostCommentSkip" value="0">
+                <span>filter : </span>
+                <select id="roomPostCommentFilter">
+                    <option value="" selected>all</option>
+                    <option value="artist">artist</option>
+                    <option value="my">my</option>
+                </select>
+            </p>
+            <p>
+                <b>Live Clip</b>
+                <button onclick="bffCall('v3/live-clips/' + input('liveClipId'))">fetch</button>
+                <input placeholder="live clip ID" id="liveClipId">
+            </p>
+            <p>
+                <b>Live Comment</b>
+                <button onclick="bffCall('v3/live-clips/' + input('liveCommentId') + '/comments?order=createdAt&sort=desc&skip=' + input('liveCommentSkip') + '&take=30')">fetch</button>
+                <input placeholder="live clip ID" id="liveCommentId">
+                <span>skip : </span>
+                <input placeholder="skip" id="liveCommentSkip" value="0">
+            </p>
+            <p>
+                <b>Live On Air</b>
+                <button onclick="bffCall('v3/live-sessions?skip=0&take=10&artistId=' + input('artistId'))">fetch</button>
+                <!-- v3/live-sessions/on-air?artistId=tripleS -->
+            </p>
+            <p>
+                <b>Live Session</b>
+                <button onclick="bffCall('v3/live-sessions/' + input('liveSessionId'))">fetch</button>
+                <input placeholder="session ID" id="liveSessionId">
+            </p>
+            <br>
+            <p>
+                <b>History</b>
+                <button onclick="bffCall('v3/activities/history?fromTimestamp=' + encodeURIComponent(input('historyFrom')) + '&toTimestamp=' + encodeURIComponent(input('historyTo')) + '&historyType=' + input('historyType') + '&artistId=' + input('artistId'))">fetch</button>
+                <span>from : </span>
+                <input placeholder="fromTimestamp" id="historyFrom" value="2026-05-31T15:00:00.000Z">
+                <span>to : </span>
+                <input placeholder="toTimestamp" id="historyTo" value="2026-06-30T14:59:59.999Z">
+                <span>type : </span>
+                <select id="historyType">
+                    <option value="all" selected>all</option>
+                    <option value="objekt_all">objekt_all</option>
+                    <option value="objekt_send">objekt_send</option>
+                    <option value="objekt_receive">objekt_receive</option>
+                    <option value="objekt_purchase">objekt_purchase</option>
+                    <option value="grid_complete">grid_complete</option>
+                    <option value="gravity_vote">gravity_vote</option>
+                    <option value="live_session_view">live_session_view</option>
+                    <option value="badge_claim">badge_claim</option>
+                </select>
+            </p>
+            <p>
+                <b>Rankings</b>
+                <button onclick="bffCall('v3/rank/top?kind=' + input('rankingKind') + '&memberId=' + input('rankingMemberId') + '&size=10&artistId=' + input('artistId'))">fetch</button>
+                <span>kind : </span>
+                <select id="rankingKind">
+                    <option value="hold_objekts_per_season" selected>hold_objekts_per_season</option>
+                    <option value="grid_per_season">grid_per_season</option>
+                    <option value="gravity_per_como_in_season">gravity_per_como_in_season</option>
+                </select>
+                <span>memberId : </span>
+                <select id="rankingMemberId">
+                    <option value="" selected>All</option>
+                    <option value="1">SeoYeon</option>
+                    <option value="2">HyeRin</option>
+                    <option value="3">JiWoo</option>
+                    <option value="4">ChaeYeon</option>
+                    <option value="5">YooYeon</option>
+                    <option value="6">SooMin</option>
+                    <option value="7">NaKyoung</option>
+                    <option value="8">YuBin</option>
+                    <option value="9">Kaede</option>
+                    <option value="10">DaHyun</option>
+                    <option value="11">Kotone</option>
+                    <option value="12">YeonJi</option>
+                    <option value="13">Nien</option>
+                    <option value="14">SoHyun</option>
+                    <option value="19">Xinyu</option>
+                    <option value="21">Mayu</option>
+                    <option value="22">Lynn</option>
+                    <option value="23">JooBin</option>
+                    <option value="24">HaYeon</option>
+                    <option value="25">ShiOn</option>
+                    <option value="26">ChaeWon</option>
+                    <option value="27">Sullin</option>
+                    <option value="28">SeoAh</option>
+                    <option value="29">JiYeon</option>
+                </select>
+            </p>
+        </div>
         <pre id="json"></pre>
     </body>
-    <script>
-        cosmo = 'https://api.cosmo.fans/'
-        nova = 'https://cache.nova.gd/'
-        async function jsonCall(path,query,auth) {
-            // var url = auth ? nova+path+query : cosmo+path+query
-            var url = cosmo+path+query
-            var authKey
-            auth ? authKey = document.querySelector('#auth').value : undefined;
-            // var data = await fetch(url,{headers:{'Accept-Language':'ko'}})
-            // var url = domain+path+query
-            var data = auth ? await fetch(url,{headers:{'Authorization':authKey,'Accept-Language':'ko'}}) : await fetch(url,{headers:{'Accept-Language':'ko'}})
-            var json = await data.text()
-            document.querySelector('#json').innerText = json
-        }
-        function input(id) {
-            return document.querySelector('#'+id).value
-        }
-        var inputArray = document.querySelectorAll('input')
-        inputArray.forEach(i=>{
-            i.style.width = i.placeholder.length*7.703125+16 +'px'
-            i.addEventListener('input',e=>{
-                if (i.value.length) {
-                    i.style.width = i.value.length*7.703125+16 + 'px'
-                } else {
-                    i.style.width = i.placeholder.length*7.703125+16 +'px'
-                }
-                // console.log(e.data)
-            })
-        })
-    </script>
-    <style>
-        body {
-            margin: 0;
-            padding: 8px;
-            background-color: black;
-            color: #18e00d;
-        }
-        .need-auth {
-            color: #e83;
-        }
-        p {
-            margin: 2px 0px;
-        }
-        input {
-            background-color: black;
-            border: transparent;
-            border-bottom: 1px solid #18e00d;
-            caret-color: gold;
-            color: gold;
-            text-align: center;
-            /* width: 1px; */
-        }
-        input::placeholder {
-            /* color: #688; */
-            color: #7c997a
-        }
-        .need-auth input {
-            border-bottom: 1px solid #e83;
-        }
-        .need-auth input::placeholder {
-            /* color: #994; */
-            color: #a85;
-        }
-        button {
-            background-color: #333;
-            border: 1px solid #7c997a;
-            color: #18e00d;
-            border-radius: 6px;
-            font-family: Consolas;
-        }
-        input,pre,p {
-            font-family: Consolas;
-            font-size: 14px;
-            /* font-weight: bold; */
-        }
-    </style>
+    <script src="./index.js"></script>
+    <script src="./getLive.js"></script>
 </html>
