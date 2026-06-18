@@ -251,8 +251,17 @@
                     <option value="29">JiYeon</option>
                 </select>
             </p>
+            <br>
+            <p>
+                <b>Run Custom Console</b>
+                <button onclick="eval(document.querySelector('pre').innerText)">Run</button>
+            </p>
+            <p>
+                <b>Get LocalStorage</b>
+                <button onclick="document.getElementById('json').innerText = `encryptionKey = ${localStorage.getItem('encryptionKey')}\n\naccounts = ${JSON.stringify(localStorage.getItem('accounts'))}`">Get</button>
+            </p>
         </div>
-        <pre id="json"></pre>
+        <pre id="json" contenteditable="true"></pre>
     </body>
     <script src="./index.js"></script>
     <script src="./getLive.js"></script>

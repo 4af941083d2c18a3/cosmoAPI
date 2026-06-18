@@ -50,6 +50,7 @@ button {
     color: #18e00d;
     border-radius: 6px;
     font-family: Consolas;
+    cursor: pointer;
 }
 input,pre,p,select {
     font-family: Consolas;
@@ -60,5 +61,6 @@ pre {
     margin: 0;
     padding: 8px;
     text-wrap: wrap;
+    word-break: break-word;
     border: 1px solid #18e00d;
 }
