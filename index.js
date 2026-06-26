@@ -108,7 +108,7 @@ async function main() {
                 i.credentials = j.credentials
                 //count++
                 if (i.id == "080108") {
-                    token = j.accessToken
+                    token = j.credentials.accessToken
                 }
             }
         }
